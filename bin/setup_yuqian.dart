@@ -4,7 +4,16 @@ import 'package:setup/setup.dart';
 
 String get home => Platform.environment['HOME']!;
 
-final installTmux = Setup(
+final setVimInBashrc = ConfigFileSetup(
+  'bashrc editor',
+  filepath: '$home/.bashrc',
+  lines: [
+    'export VISUAL=vim',
+    'export EDITOR="\$VISUAL"',
+  ],
+);
+
+final installTmux = SetupByCmds(
   'install tmux',
   commands: [Cmd('sudo apt install tmux')],
   check: CheckByCmd(
@@ -13,7 +22,7 @@ final installTmux = Setup(
   ),
 );
 
-final installGit = Setup(
+final installGit = SetupByCmds(
   'install git',
   commands: [Cmd('sudo apt install git')],
   check: CheckByCmd(
@@ -22,7 +31,7 @@ final installGit = Setup(
   ),
 );
 
-final gitConfig = Setup(
+final gitConfig = SetupByCmds(
   'config git',
   commands: [
     Cmd.args(['git', 'config', '--global', 'user.name', 'Yuqian Li']),
@@ -34,7 +43,7 @@ final gitConfig = Setup(
   ),
 );
 
-final ohMyTmux = Setup(
+final ohMyTmux = SetupByCmds(
   'install oh-my-tmux',
   commands: Cmd.simpleLines([
     'git clone https://github.com/gpakosz/.tmux.git',
@@ -45,6 +54,7 @@ final ohMyTmux = Setup(
 );
 
 Future<void> main() async {
+  await setVimInBashrc.apply();
   await installTmux.apply();
   await installGit.apply();
   await gitConfig.apply();

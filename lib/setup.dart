@@ -92,24 +92,63 @@ class FileCheck extends Check {
   }
 }
 
-class Setup {
-  const Setup(this.name,
-      {required this.commands, this.check = const TrivialCheck()});
+abstract class Setup {
+  const Setup(this.name, {this.check = const TrivialCheck()});
   final String name;
-  final List<Cmd> commands;
   final Check check;
-
+  Future<void> _doApply(Logger logger);
   Future<void> apply({Logger? logger}) async {
     logger ??= defaultLogger;
     if (await check.test(logger: logger)) {
       logger.i('Setup "$name" already passed its check. Skpping.');
       return;
     }
-    for (final cmd in commands) {
-      await cmd.run(logger: logger);
-    }
+    await _doApply(logger);
     if (!await check.test(logger: logger)) {
       throw Exception('Setup "$name" still has failed check after commands.');
     }
+  }
+}
+
+class SetupByCmds extends Setup {
+  const SetupByCmds(super.name, {required this.commands, super.check});
+  final List<Cmd> commands;
+  @override
+  Future<void> _doApply(Logger logger) async {
+    for (final cmd in commands) {
+      await cmd.run(logger: logger);
+    }
+  }
+}
+
+class ConfigFileCheck extends Check {
+  const ConfigFileCheck(this.filepath, this.lines);
+
+  final String filepath;
+  final List<String> lines;
+
+  @override
+  Future<bool> test({Logger? logger}) async {
+    final fileLines = File(filepath).readAsLinesSync().map((x) => x.trim());
+    return lines.every((line) => fileLines.contains(line.trim()));
+  }
+}
+
+class ConfigFileSetup extends Setup {
+  ConfigFileSetup(String name, {required this.filepath, required this.lines})
+      : super(name, check: ConfigFileCheck(filepath, lines));
+
+  final String filepath;
+  final List<String> lines;
+
+  @override
+  Future<void> _doApply(Logger logger) async {
+    final hash = sha512.convert(File(filepath).readAsBytesSync()).toString();
+    final backupName = '$filepath.bak.${hash.substring(0, 8)}';
+    logger.i('Backing up $filepath to $backupName');
+    File(filepath).copySync(backupName);
+    final fileLines = File(filepath).readAsLinesSync();
+    fileLines.addAll(lines);
+    File(filepath).writeAsStringSync('${fileLines.join('\n')}\n');
   }
 }
