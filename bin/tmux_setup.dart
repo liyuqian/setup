@@ -4,18 +4,18 @@ import 'package:setup/setup.dart';
 
 final tmux = Setup(
   'Install tmux',
-  commands: [Cmd.simple('sudo apt install tmux')],
+  commands: [Cmd('sudo apt install tmux')],
   check: Check(
-    Cmd.simple('tmux -V'),
+    Cmd('tmux -V'),
     (stdout) => stdout.contains('tmux 3'),
   ),
 );
 
 final git = Setup(
   'Install git',
-  commands: [Cmd.simple('sudo apt install git')],
+  commands: [Cmd('sudo apt install git')],
   check: Check(
-    Cmd.simple('git --version'),
+    Cmd('git --version'),
     (stdout) => stdout.contains('git version'),
   ),
 );
@@ -30,7 +30,7 @@ final ohMyTmux = Setup(
     'cp .tmux/.tmux.conf.local .',
   ], path: home),
   check: Check(
-    Cmd.simple('cat $home/.tmux.conf | sha1sum'),
+    Cmd('cat $home/.tmux.conf | sha1sum'),
     (stdout) => stdout.startsWith('bc4d5528'),
   ),
 );
