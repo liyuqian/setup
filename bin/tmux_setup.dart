@@ -35,4 +35,6 @@ final ohMyTmux = Setup(
   ),
 );
 
-void main() {}
+Future<void> main() async {
+  await Cmd('echo "hello"').run();
+}

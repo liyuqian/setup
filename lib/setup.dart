@@ -1,6 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:logger/logger.dart';
+
+import 'default.dart';
+
 class Cmd {
   /// Simple command that can be simply split by spaces.
   Cmd(String cmd, {String? path}) : this.args(cmd.split(' '), path: path);
@@ -16,7 +20,10 @@ class Cmd {
   final String? path;
 
   /// Return stdout or throw an error.
-  Future<String> run() async {
+  Future<String> run({Logger? logger}) async {
+    logger ??= defaultLogger;
+    logger.i('Running ${cmdAndArgs.join(' ')}');
+    logger.v('  in $path');
     final process = await Process.start(cmdAndArgs[0], cmdAndArgs.sublist(1),
         workingDirectory: path);
     final broadcast = process.stdout.asBroadcastStream();
