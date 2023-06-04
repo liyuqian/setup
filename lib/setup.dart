@@ -108,6 +108,16 @@ abstract class Setup {
       throw Exception('Setup "$name" still has failed check after commands.');
     }
   }
+
+  static void backupFile(String filepath, Logger logger) {
+    if (!File(filepath).existsSync()) {
+      return;
+    }
+    final hash = sha512.convert(File(filepath).readAsBytesSync()).toString();
+    final backupName = '$filepath.bak.${hash.substring(0, 8)}';
+    logger.i('Backing up $filepath to $backupName');
+    File(filepath).copySync(backupName);
+  }
 }
 
 class SetupByCmds extends Setup {
@@ -156,12 +166,29 @@ class ConfigFileSetup extends Setup {
 
   @override
   Future<void> _doApply(Logger logger) async {
-    final hash = sha512.convert(File(filepath).readAsBytesSync()).toString();
-    final backupName = '$filepath.bak.${hash.substring(0, 8)}';
-    logger.i('Backing up $filepath to $backupName');
-    File(filepath).copySync(backupName);
+    Setup.backupFile(filepath, logger);
     final fileLines = File(filepath).readAsLinesSync();
     fileLines.addAll(lines);
     File(filepath).writeAsStringSync('${fileLines.join('\n')}\n');
+  }
+}
+
+class DownloadFile extends SetupByCmds {
+  DownloadFile(String name,
+      {required this.path, required String url, required String sha512Prefix})
+      : super(
+          name,
+          commands: [
+            Cmd.args(['curl', url, '-o', path])
+          ],
+          check: FileCheck(path, sha512Prefix: sha512Prefix),
+        );
+
+  final String path;
+
+  @override
+  Future<void> _doApply(Logger logger) async {
+    Setup.backupFile(path, logger);
+    return await super._doApply(logger);
   }
 }

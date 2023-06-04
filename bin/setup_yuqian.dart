@@ -2,7 +2,24 @@ import 'dart:io';
 
 import 'package:setup/setup.dart';
 
+Future<void> main() async {
+  // await setVimInBashrc.apply();
+  // await installTmux.apply();
+  // await installGit.apply();
+  // await gitConfig.apply();
+  // await ohMyTmux.apply();
+
+  await installZsh.apply();
+  await ohMyZsh.apply();
+  await powerLevel10k.apply();
+  await downloadP10kConfig.apply();
+  await downloadZshrc.apply();
+}
+
 String get home => Platform.environment['HOME']!;
+
+const String kDotfileRootUrl =
+    'https://raw.githubusercontent.com/liyuqian/setup/main/dotfiles';
 
 final installTmux = AptInstall('tmux');
 final installGit = AptInstall('git');
@@ -66,32 +83,33 @@ final powerLevel10k = SetupByCmds(
   check: FileCheck('$home/.oh-my-zsh/custom/themes/powerlevel10k/README.md'),
 );
 
-final setThemePowerLevel10k = SetupByCmds(
-  'Set theme powerlevel10k',
-  commands: [
-    Cmd('cp $home/.zshrc $home/.zshrc.bak'),
-    Cmd.args([
-      'sed',
-      '-i',
-      's/ZSH_THEME=.*/ZSH_THEME="powerlevel10k\\/powerlevel10k"/g',
-      '$home/.zshrc',
-    ]),
-  ],
-  check: ConfigFileCheck(
-    '$home/.zshrc',
-    ['ZSH_THEME="powerlevel10k/powerlevel10k"'],
-  ),
+// final setThemePowerLevel10k = SetupByCmds(
+//   'Set theme powerlevel10k',
+//   commands: [
+//     Cmd('cp $home/.zshrc $home/.zshrc.bak'),
+//     Cmd.args([
+//       'sed',
+//       '-i',
+//       's/ZSH_THEME=.*/ZSH_THEME="powerlevel10k\\/powerlevel10k"/g',
+//       '$home/.zshrc',
+//     ]),
+//   ],
+//   check: ConfigFileCheck(
+//     '$home/.zshrc',
+//     ['ZSH_THEME="powerlevel10k/powerlevel10k"'],
+//   ),
+// );
+
+final downloadP10kConfig = DownloadFile(
+  'download p10k config',
+  path: '$home/.p10k.zsh',
+  url: '$kDotfileRootUrl/.p10k.zsh',
+  sha512Prefix: '7a066a31',
 );
 
-Future<void> main() async {
-  // await setVimInBashrc.apply();
-  // await installTmux.apply();
-  // await installGit.apply();
-  // await installZsh.apply();
-  // await gitConfig.apply();
-  // await ohMyTmux.apply();
-
-  await ohMyZsh.apply();
-  await powerLevel10k.apply();
-  await setThemePowerLevel10k.apply();
-}
+final downloadZshrc = DownloadFile(
+  'download zshrc',
+  path: '$home/.zshrc',
+  url: '$kDotfileRootUrl/.zshrc',
+  sha512Prefix: '5c250c6f',
+);
