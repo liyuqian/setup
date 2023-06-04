@@ -14,6 +14,7 @@ Future<void> main() async {
   await ohMyZsh.apply();
   await powerLevel10k.apply();
   await downloadP10kConfig.apply();
+  await installAutojump.apply();
   await getZshAutosuggestions.apply();
   await getZshSyntaxHighlighting.apply();
   await downloadZshrc.apply();
@@ -28,6 +29,7 @@ final installGit = AptInstall('git');
 final installTmux = AptInstall('tmux');
 final installXclip = AptInstall('xclip');
 final installZsh = AptInstall('zsh');
+final installAutojump = AptInstall('autojump');
 final getZshAutosuggestions = GetOmzPlugin('zsh-autosuggestions');
 final getZshSyntaxHighlighting = GetOmzPlugin('zsh-syntax-highlighting');
 
@@ -133,7 +135,7 @@ final downloadZshrc = DownloadFile(
   'download zshrc',
   path: '$home/.zshrc',
   url: '$kDotfileRootUrl/.zshrc',
-  sha512Prefix: '11d979fd',
+  sha512Prefix: '313b846e',
 );
 
 final setZshAsDefault = SetupByCmds(
