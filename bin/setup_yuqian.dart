@@ -14,6 +14,7 @@ Future<void> main() async {
   await powerLevel10k.apply();
   await downloadP10kConfig.apply();
   await downloadZshrc.apply();
+  await setZshAsDefault.apply();
 }
 
 String get home => Platform.environment['HOME']!;
@@ -112,4 +113,11 @@ final downloadZshrc = DownloadFile(
   path: '$home/.zshrc',
   url: '$kDotfileRootUrl/.zshrc',
   sha512Prefix: '86d19382',
+);
+
+final setZshAsDefault = SetupByCmds(
+  'set zsh as default',
+  commands: [Cmd('chsh -s /usr/bin/zsh')],
+  check: CheckByCmd(
+      Cmd('cat /etc/passwd'), (stdout) => stdout.contains('/usr/bin/zsh')),
 );

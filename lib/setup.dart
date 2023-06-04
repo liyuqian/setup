@@ -21,18 +21,21 @@ class Cmd {
   final String? path;
 
   /// Return stdout or throw an error.
-  Future<String> run({Logger? logger}) async {
+  Future<String> run({Logger? logger, bool streamOut = false}) async {
     logger ??= defaultLogger;
     final pathInfo = path == null ? '' : ' in $path';
     logger.i('Running `${cmdAndArgs.join(' ')}` $pathInfo');
     final process = await Process.start(cmdAndArgs[0], cmdAndArgs.sublist(1),
         workingDirectory: path);
     final Stream<List<int>> broadcast = process.stdout.asBroadcastStream();
-    final Future outDone = stdout.addStream(broadcast);
-    final Future errDone = stderr.addStream(process.stderr);
+    final List<Future> futures = [];
+    if (streamOut) {
+      futures.add(stdout.addStream(broadcast));
+    }
+    futures.add(stderr.addStream(process.stderr));
     final String out = await broadcast.transform(utf8.decoder).join('\n');
     final int exitCode = await process.exitCode;
-    await Future.wait([outDone, errDone]);
+    await Future.wait(futures);
     if (exitCode != 0) {
       throw Exception('Unexpected exit code $exitCode');
     }
@@ -137,7 +140,7 @@ class AptInstall extends SetupByCmds {
           'apt install $package',
           commands: [Cmd('sudo apt install -y $package')],
           check: CheckByCmd(
-            Cmd('apt list --installed $package'),
+            Cmd('dpkg-query --status $package'),
             (stdout) => stdout.contains('installed'),
           ),
         );
