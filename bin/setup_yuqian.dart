@@ -111,5 +111,5 @@ final downloadZshrc = DownloadFile(
   'download zshrc',
   path: '$home/.zshrc',
   url: '$kDotfileRootUrl/.zshrc',
-  sha512Prefix: '5c250c6f',
+  sha512Prefix: '86d19382',
 );
