@@ -10,11 +10,9 @@ Future<void> setUpZsh(String dotfileRootUrl, {Logger? logger}) async {
     installZsh,
     ohMyZsh,
     powerLevel10k,
-    makeDownloadP10kConfig(dotfileRootUrl),
     installAutojump,
     getZshAutosuggestions,
     getZshSyntaxHighlighting,
-    makeDownloadZshrc(dotfileRootUrl),
     setVimInZshrc,
     setZshAsDefault,
   ];
@@ -74,20 +72,6 @@ final powerLevel10k = SetupByCmds(
 //     ['ZSH_THEME="powerlevel10k/powerlevel10k"'],
 //   ),
 // );
-
-Setup makeDownloadP10kConfig(String dotfileRootUrl) => DownloadFile(
-      'download p10k config',
-      path: '$home/.p10k.zsh',
-      url: '$dotfileRootUrl/.p10k.zsh',
-      sha512Prefix: '7a066a31',
-    );
-
-Setup makeDownloadZshrc(String dotfileRootUrl) => DownloadFile(
-      'download zshrc',
-      path: '$home/.zshrc',
-      url: '$dotfileRootUrl/.zshrc',
-      sha512Prefix: '313b846e',
-    );
 
 final setZshAsDefault = SetupByCmds(
   'set zsh as default',

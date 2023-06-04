@@ -2,25 +2,26 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:setup/default.dart';
+import 'package:setup/dotfile.dart';
 import 'package:setup/setup.dart';
 
 void main() {
-  final List<String> relativePaths = [
-    '.vim_runtime/my_configs.vim',
-    '.zshrc',
-    '.tmux.conf.local',
-    '.p10k.zsh',
-  ];
-
   final String projectRoot = File(Platform.script.path).parent.parent.path;
-  for (final relativePath in relativePaths) {
+  for (final relativePath in kRelativePathToHash.keys) {
     final original = File('$home/$relativePath');
     final copy = File('$projectRoot/dotfiles/$relativePath');
+    final hash =
+        sha512.convert(original.readAsBytesSync()).toString().substring(0, 8);
     if (original.readAsStringSync() != copy.readAsStringSync()) {
       original.copySync(copy.path);
-      final hash = sha512.convert(copy.readAsBytesSync()).toString();
-      defaultLogger
-          .i('copied $relativePath with hash prefix ${hash.substring(0, 8)}');
+      defaultLogger.i('copied $relativePath with hash prefix $hash');
+    } else {
+      defaultLogger.i('No need to copy $relativePath');
+      if (hash != kRelativePathToHash[relativePath]) {
+        defaultLogger.e(
+            'Hash mismatch $hash != ${kRelativePathToHash[relativePath]} '
+            'for $relativePath');
+      }
     }
   }
 }

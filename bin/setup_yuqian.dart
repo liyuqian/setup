@@ -1,3 +1,4 @@
+import 'package:setup/dotfile.dart';
 import 'package:setup/setup.dart';
 import 'package:setup/zsh.dart';
 
@@ -9,7 +10,6 @@ Future<void> main() async {
   await installTmux.apply();
   await ohMyTmux.apply();
   await installXclip.apply();
-  await downloadTmuxConfLocal.apply();
 
   await setUpZsh(kDotfileRootUrl);
 
@@ -18,7 +18,8 @@ Future<void> main() async {
   await vimLscPlugin.apply();
   await vimLscDartPlugin.apply();
   await fzfVimPlugin.apply();
-  await downloadVimConfig.apply();
+
+  await downloadDotfiles(kDotfileRootUrl);
 }
 
 const String kDotfileRootUrl =
@@ -56,13 +57,6 @@ final ohMyTmux = SetupByCmds('install oh-my-tmux',
       'cp .tmux/.tmux.conf.local .',
     ], path: home),
     check: FileCheck('$home/.tmux.conf'));
-
-final downloadTmuxConfLocal = DownloadFile(
-  'download tmux.conf.local',
-  path: '$home/.tmux.conf.local',
-  url: '$kDotfileRootUrl/.tmux.conf.local',
-  sha512Prefix: '2e91420b',
-);
 
 final ultimateVimrc = SetupByCmds(
   'ultimate vimrc',
@@ -112,10 +106,3 @@ final dartVimPlugin = VimPlugin('https://github.com/dart-lang/dart-vim-plugin');
 final vimLscPlugin = VimPlugin('https://github.com/natebosch/vim-lsc');
 final vimLscDartPlugin = VimPlugin('https://github.com/natebosch/vim-lsc-dart');
 final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
-
-final downloadVimConfig = DownloadFile(
-  'download my_configs.vim',
-  path: '$home/.vim_runtime/my_configs.vim',
-  url: '$kDotfileRootUrl/.vim_runtime/my_configs.vim',
-  sha512Prefix: 'f4b8656e',
-);
