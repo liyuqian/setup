@@ -8,6 +8,8 @@ import 'default.dart';
 
 String get home => Platform.environment['HOME']!;
 
+const String kRawGithubRoot = 'https://raw.githubusercontent.com';
+
 class ExitCodeError extends Error {
   ExitCodeError(this.exitCode);
   final int exitCode;
@@ -30,7 +32,7 @@ class Cmd {
   final String? path;
 
   /// Return stdout or throw an error.
-  Future<String> run({Logger? logger, bool streamOut = false}) async {
+  Future<String> run({Logger? logger, bool streamOut = true}) async {
     logger ??= defaultLogger;
     final pathInfo = path == null ? '' : ' in $path';
     logger.i('Running `${cmdAndArgs.join(' ')}` $pathInfo');
@@ -73,7 +75,7 @@ class CheckByCmd extends Check {
   Future<bool> test({Logger? logger}) async {
     logger ??= defaultLogger;
     try {
-      return pass(await command.run());
+      return pass(await command.run(streamOut: false));
     } on ExitCodeError catch (e, stacktrace) {
       if (!okExitCodes.contains(e.exitCode)) {
         logger.e('$e\n\nStacktrace:\n$stacktrace');
