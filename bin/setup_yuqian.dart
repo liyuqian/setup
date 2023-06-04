@@ -66,22 +66,32 @@ final powerLevel10k = SetupByCmds(
   check: FileCheck('$home/.oh-my-zsh/custom/themes/powerlevel10k/README.md'),
 );
 
-final powerLevel10kConfig = ConfigFileSetup(
-  'powerlevel10k config',
-  filepath: '$home/.zshrc',
-  lines: [
-    'ZSH_THEME="powerlevel10k/powerlevel10k"',
+final setThemePowerLevel10k = SetupByCmds(
+  'Set theme powerlevel10k',
+  commands: [
+    Cmd('cp $home/.zshrc $home/.zshrc.bak'),
+    Cmd.args([
+      'sed',
+      '-i',
+      's/ZSH_THEME=.*/ZSH_THEME="powerlevel10k\\/powerlevel10k"/g',
+      '$home/.zshrc',
+    ]),
   ],
+  check: ConfigFileCheck(
+    '$home/.zshrc',
+    ['ZSH_THEME="powerlevel10k/powerlevel10k"'],
+  ),
 );
 
 Future<void> main() async {
-  ohMyZsh.apply();
-  powerLevel10k.apply();
-  powerLevel10kConfig.apply();
   // await setVimInBashrc.apply();
   // await installTmux.apply();
   // await installGit.apply();
   // await installZsh.apply();
   // await gitConfig.apply();
   // await ohMyTmux.apply();
+
+  await ohMyZsh.apply();
+  await powerLevel10k.apply();
+  await setThemePowerLevel10k.apply();
 }
