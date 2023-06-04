@@ -6,6 +6,15 @@ import 'package:logger/logger.dart';
 
 import 'default.dart';
 
+String get home => Platform.environment['HOME']!;
+
+class ExitCodeError extends Error {
+  ExitCodeError(this.exitCode);
+  final int exitCode;
+  @override
+  String toString() => 'Unexpected exit code $exitCode';
+}
+
 class Cmd {
   /// Simple command that can be split by spaces without escapes.
   Cmd(String cmd, {String? path}) : this.args(cmd.split(' '), path: path);
@@ -37,7 +46,7 @@ class Cmd {
     final int exitCode = await process.exitCode;
     await Future.wait(futures);
     if (exitCode != 0) {
-      throw Exception('Unexpected exit code $exitCode');
+      throw ExitCodeError(exitCode);
     }
     return out;
   }
@@ -55,16 +64,21 @@ class False extends Check {
 }
 
 class CheckByCmd extends Check {
-  const CheckByCmd(this.command, this.pass, {this.expectedExitCode = 0});
+  const CheckByCmd(this.command, this.pass, {this.okExitCodes = const [0]});
   final Cmd command;
   final bool Function(String stdout) pass;
-  final int expectedExitCode;
+  final List<int> okExitCodes;
 
   @override
   Future<bool> test({Logger? logger}) async {
     logger ??= defaultLogger;
     try {
       return pass(await command.run());
+    } on ExitCodeError catch (e, stacktrace) {
+      if (!okExitCodes.contains(e.exitCode)) {
+        logger.e('$e\n\nStacktrace:\n$stacktrace');
+      }
+      return false;
     } on Exception catch (e, stacktrace) {
       logger.e('$e\n\nStacktrace:\n$stacktrace');
       return false;
@@ -138,13 +152,30 @@ class AptInstall extends SetupByCmds {
   AptInstall(this.package)
       : super(
           'apt install $package',
-          commands: [Cmd('sudo apt install -y $package')],
+          commands: [Cmd('sudo apt-get install -y $package')],
           check: CheckByCmd(
             Cmd('dpkg-query --status $package'),
             (stdout) => stdout.contains('installed'),
+            okExitCodes: [0, 1],
           ),
         );
   final String package;
+}
+
+class GetOmzPlugin extends SetupByCmds {
+  GetOmzPlugin(String name)
+      : super(
+          'get oh-my-zsh plugin $name',
+          commands: [
+            Cmd.args([
+              'git',
+              'clone',
+              'https://github.com/zsh-users/$name',
+              '$home/.oh-my-zsh/custom/plugins/$name',
+            ]),
+          ],
+          check: FileCheck('$home/.oh-my-zsh/custom/plugins/$name/README.md'),
+        );
 }
 
 class ConfigFileCheck extends Check {

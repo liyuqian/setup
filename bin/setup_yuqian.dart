@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:setup/setup.dart';
 
 Future<void> main() async {
@@ -7,29 +5,31 @@ Future<void> main() async {
   // await installGit.apply();
   // await gitConfig.apply();
 
-  await installTmux.apply();
-  await ohMyTmux.apply();
-  await installXclip.apply();
-  await downloadTmuxConfLocal.apply();
+  // await installTmux.apply();
+  // await ohMyTmux.apply();
+  // await installXclip.apply();
+  // await downloadTmuxConfLocal.apply();
 
-  // await installZsh.apply();
-  // await ohMyZsh.apply();
-  // await powerLevel10k.apply();
-  // await downloadP10kConfig.apply();
-  // await downloadZshrc.apply();
-  // await setVimInZshrc.apply();
-  // await setZshAsDefault.apply();
+  await installZsh.apply();
+  await ohMyZsh.apply();
+  await powerLevel10k.apply();
+  await downloadP10kConfig.apply();
+  await getZshAutosuggestions.apply();
+  await getZshSyntaxHighlighting.apply();
+  await downloadZshrc.apply();
+  await setVimInZshrc.apply();
+  await setZshAsDefault.apply();
 }
-
-String get home => Platform.environment['HOME']!;
 
 const String kDotfileRootUrl =
     'https://raw.githubusercontent.com/liyuqian/setup/main/dotfiles';
 
-final installTmux = AptInstall('tmux');
 final installGit = AptInstall('git');
-final installZsh = AptInstall('zsh');
+final installTmux = AptInstall('tmux');
 final installXclip = AptInstall('xclip');
+final installZsh = AptInstall('zsh');
+final getZshAutosuggestions = GetOmzPlugin('zsh-autosuggestions');
+final getZshSyntaxHighlighting = GetOmzPlugin('zsh-syntax-highlighting');
 
 final setVimInBashrc = ConfigFileSetup(
   'bashrc editor',
@@ -133,7 +133,7 @@ final downloadZshrc = DownloadFile(
   'download zshrc',
   path: '$home/.zshrc',
   url: '$kDotfileRootUrl/.zshrc',
-  sha512Prefix: '0ea69467',
+  sha512Prefix: '11d979fd',
 );
 
 final setZshAsDefault = SetupByCmds(
