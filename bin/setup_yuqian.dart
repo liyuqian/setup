@@ -14,6 +14,7 @@ Future<void> main() async {
   await powerLevel10k.apply();
   await downloadP10kConfig.apply();
   await downloadZshrc.apply();
+  await setVimInZshrc.apply();
   await setZshAsDefault.apply();
 }
 
@@ -29,6 +30,15 @@ final installZsh = AptInstall('zsh');
 final setVimInBashrc = ConfigFileSetup(
   'bashrc editor',
   filepath: '$home/.bashrc',
+  lines: [
+    'export VISUAL=vim',
+    'export EDITOR="\$VISUAL"',
+  ],
+);
+
+final setVimInZshrc = ConfigFileSetup(
+  'zshrc editor',
+  filepath: '$home/.zshrc',
   lines: [
     'export VISUAL=vim',
     'export EDITOR="\$VISUAL"',
@@ -112,7 +122,7 @@ final downloadZshrc = DownloadFile(
   'download zshrc',
   path: '$home/.zshrc',
   url: '$kDotfileRootUrl/.zshrc',
-  sha512Prefix: '86d19382',
+  sha512Prefix: '0ea69467',
 );
 
 final setZshAsDefault = SetupByCmds(
