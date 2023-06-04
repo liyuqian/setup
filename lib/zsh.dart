@@ -6,6 +6,7 @@ import 'setup.dart';
 
 Future<void> setUpZsh(String dotfileRootUrl, {Logger? logger}) async {
   final setups = [
+    installFzf,
     installZsh,
     ohMyZsh,
     powerLevel10k,
@@ -22,6 +23,7 @@ Future<void> setUpZsh(String dotfileRootUrl, {Logger? logger}) async {
   }
 }
 
+final installFzf = AptInstall('fzf');
 final installZsh = AptInstall('zsh');
 final installAutojump = AptInstall('autojump');
 final getZshAutosuggestions = GetOmzPlugin('zsh-autosuggestions');

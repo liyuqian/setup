@@ -17,6 +17,7 @@ Future<void> main() async {
   await dartVimPlugin.apply();
   await vimLscPlugin.apply();
   await vimLscDartPlugin.apply();
+  await fzfVimPlugin.apply();
   await downloadVimConfig.apply();
 }
 
@@ -110,10 +111,11 @@ class VimPlugin extends SetupByCmds {
 final dartVimPlugin = VimPlugin('https://github.com/dart-lang/dart-vim-plugin');
 final vimLscPlugin = VimPlugin('https://github.com/natebosch/vim-lsc');
 final vimLscDartPlugin = VimPlugin('https://github.com/natebosch/vim-lsc-dart');
+final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
 
 final downloadVimConfig = DownloadFile(
   'download my_configs.vim',
   path: '$home/.vim_runtime/my_configs.vim',
   url: '$kDotfileRootUrl/.vim_runtime/my_configs.vim',
-  sha512Prefix: '5cce096f',
+  sha512Prefix: 'f4b8656e',
 );

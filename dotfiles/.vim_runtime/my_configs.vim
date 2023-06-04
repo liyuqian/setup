@@ -3,5 +3,7 @@ let g:ctrlp_map = '<C-p>'
 
 let g:lsc_server_commands = {'dart': 'dart_language_server'}
 
+source /usr/share/doc/fzf/examples/fzf.vim
+
 set number
 
