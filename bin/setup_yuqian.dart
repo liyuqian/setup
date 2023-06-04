@@ -12,6 +12,12 @@ Future<void> main() async {
   await downloadTmuxConfLocal.apply();
 
   await setUpZsh(kDotfileRootUrl);
+
+  await ultimateVimrc.apply();
+  await dartVimPlugin.apply();
+  await vimLscPlugin.apply();
+  await vimLscDartPlugin.apply();
+  await downloadVimConfig.apply();
 }
 
 const String kDotfileRootUrl =
@@ -55,4 +61,59 @@ final downloadTmuxConfLocal = DownloadFile(
   path: '$home/.tmux.conf.local',
   url: '$kDotfileRootUrl/.tmux.conf.local',
   sha512Prefix: '2e91420b',
+);
+
+final ultimateVimrc = SetupByCmds(
+  'ultimate vimrc',
+  commands: [
+    Cmd.args([
+      'git',
+      'clone',
+      '--depth=1',
+      'https://github.com/amix/vimrc.git',
+      '$home/.vim_runtime',
+    ]),
+    Cmd('sh $home/.vim_runtime/install_awesome_vimrc.sh'),
+  ],
+  check: CheckByCmd(
+    Cmd('cat $home/.vimrc'),
+    (stdout) => stdout.contains('.vim_runtime'),
+    okExitCodes: [0, 1],
+  ),
+);
+
+class VimPlugin extends SetupByCmds {
+  VimPlugin(String url)
+      : super(
+          parseName(url),
+          commands: [Cmd('git clone $url $path/${parseName(url)}')],
+          check: FileCheck('$path/${parseName(url)}/README.md'),
+        );
+
+  static String get path => '$home/.vim_runtime/my_plugins';
+  static String parseName(String url) => Uri.parse(url).pathSegments.last;
+}
+
+// final getDartVimPlugin = SetupByCmds(
+//   'dart vim plugin',
+//   commands: [
+//     Cmd.args([
+//       'git',
+//       'clone',
+//       'https://github.com/dart-lang/dart-vim-plugin',
+//       '$home/.vim_runtime/my_plugins/dart-vim-plugin'
+//     ]),
+//   ],
+//   check: FileCheck('$home/.vim_runtime/my_plugins/dart-vim-plugin/README.md'),
+// );
+
+final dartVimPlugin = VimPlugin('https://github.com/dart-lang/dart-vim-plugin');
+final vimLscPlugin = VimPlugin('https://github.com/natebosch/vim-lsc');
+final vimLscDartPlugin = VimPlugin('https://github.com/natebosch/vim-lsc-dart');
+
+final downloadVimConfig = DownloadFile(
+  'download my_configs.vim',
+  path: '$home/.vim_runtime/my_configs.vim',
+  url: '$kDotfileRootUrl/.vim_runtime/my_configs.vim',
+  sha512Prefix: '5cce096f',
 );
