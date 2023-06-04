@@ -4,18 +4,21 @@ import 'package:setup/setup.dart';
 
 Future<void> main() async {
   // await setVimInBashrc.apply();
-  // await installTmux.apply();
   // await installGit.apply();
   // await gitConfig.apply();
-  // await ohMyTmux.apply();
 
-  await installZsh.apply();
-  await ohMyZsh.apply();
-  await powerLevel10k.apply();
-  await downloadP10kConfig.apply();
-  await downloadZshrc.apply();
-  await setVimInZshrc.apply();
-  await setZshAsDefault.apply();
+  await installTmux.apply();
+  await ohMyTmux.apply();
+  await installXclip.apply();
+  await downloadTmuxConfLocal.apply();
+
+  // await installZsh.apply();
+  // await ohMyZsh.apply();
+  // await powerLevel10k.apply();
+  // await downloadP10kConfig.apply();
+  // await downloadZshrc.apply();
+  // await setVimInZshrc.apply();
+  // await setZshAsDefault.apply();
 }
 
 String get home => Platform.environment['HOME']!;
@@ -26,6 +29,7 @@ const String kDotfileRootUrl =
 final installTmux = AptInstall('tmux');
 final installGit = AptInstall('git');
 final installZsh = AptInstall('zsh');
+final installXclip = AptInstall('xclip');
 
 final setVimInBashrc = ConfigFileSetup(
   'bashrc editor',
@@ -64,6 +68,13 @@ final ohMyTmux = SetupByCmds('install oh-my-tmux',
       'cp .tmux/.tmux.conf.local .',
     ], path: home),
     check: FileCheck('$home/.tmux.conf'));
+
+final downloadTmuxConfLocal = DownloadFile(
+  'download tmux.conf.local',
+  path: '$home/.tmux.conf.local',
+  url: '$kDotfileRootUrl/.tmux.conf.local',
+  sha512Prefix: '2e91420b',
+);
 
 final ohMyZsh = SetupByCmds(
   'install oh-my-zsh',
