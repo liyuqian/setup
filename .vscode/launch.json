@@ -8,7 +8,7 @@
             "name": "setup",
             "request": "launch",
             "type": "dart",
-            "program": "bin/setup.dart"
+            "program": "bin/setup_yuqian.dart"
         }
     ]
 }

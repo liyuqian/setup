@@ -45,10 +45,10 @@ abstract class Check {
   Future<bool> test({Logger? logger});
 }
 
-class TrivialCheck extends Check {
-  const TrivialCheck();
+class False extends Check {
+  const False();
   @override
-  test({Logger? logger}) async => true;
+  test({Logger? logger}) async => false;
 }
 
 class CheckByCmd extends Check {
@@ -93,7 +93,7 @@ class FileCheck extends Check {
 }
 
 abstract class Setup {
-  const Setup(this.name, {this.check = const TrivialCheck()});
+  const Setup(this.name, {this.check = const False()});
   final String name;
   final Check check;
   Future<void> _doApply(Logger logger);
@@ -119,6 +119,19 @@ class SetupByCmds extends Setup {
       await cmd.run(logger: logger);
     }
   }
+}
+
+class AptInstall extends SetupByCmds {
+  AptInstall(this.package)
+      : super(
+          'apt install $package',
+          commands: [Cmd('sudo apt install -y $package')],
+          check: CheckByCmd(
+            Cmd('apt list --installed $package'),
+            (stdout) => stdout.contains('installed'),
+          ),
+        );
+  final String package;
 }
 
 class ConfigFileCheck extends Check {
