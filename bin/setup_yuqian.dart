@@ -13,11 +13,13 @@ Future<void> main() async {
 
   await setUpZsh(kDotfileRootUrl);
 
+  await addNodejs19.apply();
+  await installNodejs.apply();
+
   await ultimateVimrc.apply();
   await dartVimPlugin.apply();
-  await vimLscPlugin.apply();
-  await vimLscDartPlugin.apply();
   await fzfVimPlugin.apply();
+  await cocVimPlugin.apply();
 
   await downloadDotfiles(kDotfileRootUrl);
 }
@@ -28,6 +30,19 @@ const String kDotfileRootUrl =
 final installGit = AptInstall('git');
 final installTmux = AptInstall('tmux');
 final installXclip = AptInstall('xclip');
+
+final addNodejs19 = SetupByCmds(
+  'add nodejs 19',
+  commands: [
+    Cmd('curl -fsSL https://deb.nodesource.com/setup_19.x -o /tmp/node.sh'),
+    Cmd('sudo -E bash /tmp/node.sh'),
+  ],
+  check: CheckByCmd(
+    Cmd('apt list nodejs'),
+    (stdout) => stdout.contains(' 19'),
+  ),
+);
+final installNodejs = AptInstall('nodejs');
 
 final setVimInBashrc = ConfigFileSetup(
   'bashrc editor',
@@ -78,11 +93,17 @@ final ultimateVimrc = SetupByCmds(
 );
 
 class VimPlugin extends SetupByCmds {
-  VimPlugin(String url)
+  VimPlugin(String url, {String? branch})
       : super(
           parseName(url),
-          commands: [Cmd('git clone $url $path/${parseName(url)}')],
-          check: FileCheck('$path/${parseName(url)}/README.md'),
+          commands: [
+            Cmd.args(
+              ['git', 'clone', '--depth=1'] +
+                  (branch != null ? ['-b', branch] : []) +
+                  [url, '$path/${parseName(url)}'],
+            ),
+          ],
+          check: FileCheck('$path/${parseName(url)}'),
         );
 
   static String get path => '$home/.vim_runtime/my_plugins';
@@ -103,6 +124,6 @@ class VimPlugin extends SetupByCmds {
 // );
 
 final dartVimPlugin = VimPlugin('https://github.com/dart-lang/dart-vim-plugin');
-final vimLscPlugin = VimPlugin('https://github.com/natebosch/vim-lsc');
-final vimLscDartPlugin = VimPlugin('https://github.com/natebosch/vim-lsc-dart');
 final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
+final cocVimPlugin =
+    VimPlugin('https://github.com/neoclide/coc.nvim', branch: 'release');

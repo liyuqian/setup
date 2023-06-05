@@ -96,6 +96,9 @@ class FileCheck extends Check {
   @override
   Future<bool> test({Logger? logger}) async {
     logger ??= defaultLogger;
+    if (sha512Prefix == null && Directory(filepath).existsSync()) {
+      return true;
+    }
     if (!File(filepath).existsSync()) {
       return false;
     }
