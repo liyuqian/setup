@@ -16,6 +16,7 @@ Future<void> main() async {
   await addNodejs19.apply();
   await installNodejs.apply();
 
+  await installLatestVim.apply();
   await ultimateVimrc.apply();
   await dartVimPlugin.apply();
   await fzfVimPlugin.apply();
@@ -73,6 +74,19 @@ final ohMyTmux = SetupByCmds('install oh-my-tmux',
     ], path: home),
     check: FileCheck('$home/.tmux.conf'));
 
+final installLatestVim = SetupByCmds(
+    "install latest vim",
+    commands: Cmd.simpleLines([
+      'sudo add-apt-repository ppa:jonathonf/vim',
+      'sudo apt update',
+      'sudo apt install -y vim',
+    ]),
+    check: CheckByCmd(
+      Cmd('vim --version'),
+      (stdout) => stdout.contains('Vi IMproved 9'),
+      cmdMayNotBeFound: true,
+    ));
+
 final ultimateVimrc = SetupByCmds(
   'ultimate vimrc',
   commands: [
@@ -109,19 +123,6 @@ class VimPlugin extends SetupByCmds {
   static String get path => '$home/.vim_runtime/my_plugins';
   static String parseName(String url) => Uri.parse(url).pathSegments.last;
 }
-
-// final getDartVimPlugin = SetupByCmds(
-//   'dart vim plugin',
-//   commands: [
-//     Cmd.args([
-//       'git',
-//       'clone',
-//       'https://github.com/dart-lang/dart-vim-plugin',
-//       '$home/.vim_runtime/my_plugins/dart-vim-plugin'
-//     ]),
-//   ],
-//   check: FileCheck('$home/.vim_runtime/my_plugins/dart-vim-plugin/README.md'),
-// );
 
 final dartVimPlugin = VimPlugin('https://github.com/dart-lang/dart-vim-plugin');
 final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
