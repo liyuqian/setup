@@ -4,7 +4,7 @@ import 'package:logger/logger.dart';
 
 import 'setup.dart';
 
-Future<void> setUpZsh(String dotfileRootUrl, {Logger? logger}) async {
+Future<void> setUpZsh({Logger? logger}) async {
   final setups = [
     installFzf,
     installZsh,

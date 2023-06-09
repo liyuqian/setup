@@ -11,7 +11,7 @@ Future<void> main() async {
   await ohMyTmux.apply();
   await installXclip.apply();
 
-  await setUpZsh(kDotfileRootUrl);
+  await setUpZsh();
 
   await installNode19.apply();
 
