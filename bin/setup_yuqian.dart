@@ -13,8 +13,7 @@ Future<void> main() async {
 
   await setUpZsh(kDotfileRootUrl);
 
-  await addNodejs19.apply();
-  await installNodejs.apply();
+  await installNode19.apply();
 
   await installLatestVim.apply();
   await ultimateVimrc.apply();
@@ -32,18 +31,17 @@ final installGit = AptInstall('git');
 final installTmux = AptInstall('tmux');
 final installXclip = AptInstall('xclip');
 
-final addNodejs19 = SetupByCmds(
-  'add nodejs 19',
-  commands: [
-    Cmd('curl -fsSL https://deb.nodesource.com/setup_19.x -o /tmp/node.sh'),
-    Cmd('sudo -E bash /tmp/node.sh'),
-  ],
-  check: CheckByCmd(
-    Cmd('apt list nodejs'),
-    (stdout) => stdout.contains(' 19'),
-  ),
-);
-final installNodejs = AptInstall('nodejs');
+final installNode19 = SetupByCmds('Install nodejs 19',
+    commands: Cmd.simpleLines([
+      'curl -fsSL https://deb.nodesource.com/setup_19.x -o /tmp/node.sh',
+      'sudo -E bash /tmp/node.sh',
+      'sudo apt-get install -y nodejs',
+    ]),
+    check: CheckByCmd(
+      Cmd('node --version'),
+      (stdout) => stdout.contains('v19'),
+      cmdMayNotBeFound: true,
+    ));
 
 final setVimInBashrc = ConfigFileSetup(
   'bashrc editor',
@@ -74,8 +72,7 @@ final ohMyTmux = SetupByCmds('install oh-my-tmux',
     ], path: home),
     check: FileCheck('$home/.tmux.conf'));
 
-final installLatestVim = SetupByCmds(
-    "install latest vim",
+final installLatestVim = SetupByCmds("install latest vim",
     commands: Cmd.simpleLines([
       'sudo add-apt-repository ppa:jonathonf/vim',
       'sudo apt update',
