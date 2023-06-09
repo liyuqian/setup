@@ -113,6 +113,8 @@ source $ZSH/oh-my-zsh.sh
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
+export HISTSIZE=1000000
+
 source /usr/share/doc/fzf/examples/key-bindings.zsh
 source /usr/share/doc/fzf/examples/completion.zsh
 
