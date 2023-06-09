@@ -40,7 +40,7 @@ final installNode19 = SetupByCmds('Install nodejs 19',
     check: CheckByCmd(
       Cmd('node --version'),
       (stdout) => stdout.contains('v19'),
-      cmdMayNotBeFound: true,
+      muteCmdNotFound: true,
     ));
 
 final setVimInBashrc = ConfigFileSetup(
@@ -81,7 +81,7 @@ final installLatestVim = SetupByCmds("install latest vim",
     check: CheckByCmd(
       Cmd('vim --version'),
       (stdout) => stdout.contains('Vi IMproved 9'),
-      cmdMayNotBeFound: true,
+      muteCmdNotFound: true,
     ));
 
 final ultimateVimrc = SetupByCmds(

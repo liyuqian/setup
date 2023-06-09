@@ -67,11 +67,11 @@ class False extends Check {
 
 class CheckByCmd extends Check {
   const CheckByCmd(this.command, this.pass,
-      {this.okExitCodes = const [0], this.cmdMayNotBeFound = false});
+      {this.okExitCodes = const [0], this.muteCmdNotFound = false});
   final Cmd command;
   final bool Function(String stdout) pass;
   final List<int> okExitCodes;
-  final bool cmdMayNotBeFound;
+  final bool muteCmdNotFound;
 
   @override
   Future<bool> test({Logger? logger}) async {
@@ -84,7 +84,7 @@ class CheckByCmd extends Check {
       }
       return false;
     } on ProcessException catch (e, stacktrace) {
-      if (!cmdMayNotBeFound) {
+      if (!muteCmdNotFound || e.errorCode != 2) {
         logger.e('$e\n\nStacktrace:\n$stacktrace');
       }
       return false;
