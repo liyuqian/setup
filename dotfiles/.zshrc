@@ -115,3 +115,6 @@ export EDITOR="$VISUAL"
 
 source /usr/share/doc/fzf/examples/key-bindings.zsh
 source /usr/share/doc/fzf/examples/completion.zsh
+
+# Load ~/.zshrc.local for customization if there's any.
+[[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local
