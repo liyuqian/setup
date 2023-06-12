@@ -7,13 +7,15 @@ Future<void> main() async {
 }
 
 Future<void> setUpPython() async {
-  await installPip.apply();
-  await installPoetry.apply();
-  await configPoetryVenv.apply();
-
   // Conda can easily install CUDA in the virtual environment. Hence we'll
   // prefer it over poetry in those cases.
+  //
+  // All other dependencies such as pip and poetry can be installed using conda.
   await setUpConda();
+
+  // await installPip.apply();
+  // await installPoetry.apply();
+  // await configPoetryVenv.apply();
 }
 
 final installPip = AptInstall('python3-pip');
