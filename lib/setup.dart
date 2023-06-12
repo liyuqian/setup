@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:logger/logger.dart';
+import 'package:meta/meta.dart';
 
 import 'default.dart';
 
@@ -125,14 +126,14 @@ abstract class Setup {
   const Setup(this.name, {this.check = const False()});
   final String name;
   final Check check;
-  Future<void> _doApply(Logger logger);
+
   Future<void> apply({Logger? logger}) async {
     logger ??= defaultLogger;
     if (await check.test(logger: logger)) {
       logger.i('Setup "$name" already passed its check. Skpping.');
       return;
     }
-    await _doApply(logger);
+    await doApply(logger);
     if (!await check.test(logger: logger)) {
       throw Exception('Setup "$name" still has failed check after commands.');
     }
@@ -147,13 +148,16 @@ abstract class Setup {
     logger.i('Backing up $filepath to $backupName');
     File(filepath).copySync(backupName);
   }
+
+  @protected
+  Future<void> doApply(Logger logger);
 }
 
 class SetupByCmds extends Setup {
   const SetupByCmds(super.name, {required this.commands, super.check});
   final List<Cmd> commands;
   @override
-  Future<void> _doApply(Logger logger) async {
+  Future<void> doApply(Logger logger) async {
     for (final cmd in commands) {
       await cmd.run(logger: logger);
     }
@@ -211,7 +215,7 @@ class ConfigFileSetup extends Setup {
   final List<String> lines;
 
   @override
-  Future<void> _doApply(Logger logger) async {
+  Future<void> doApply(Logger logger) async {
     Setup.backupFile(filepath, logger);
     final fileLines = File(filepath).readAsLinesSync();
     fileLines.addAll(lines);
@@ -233,8 +237,8 @@ class DownloadFile extends SetupByCmds {
   final String path;
 
   @override
-  Future<void> _doApply(Logger logger) async {
+  Future<void> doApply(Logger logger) async {
     Setup.backupFile(path, logger);
-    return await super._doApply(logger);
+    return await super.doApply(logger);
   }
 }

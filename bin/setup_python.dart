@@ -1,5 +1,7 @@
 import 'package:setup/setup.dart';
 
+import 'setup_miniconda.dart';
+
 Future<void> main() async {
   await setUpPython();
 }
@@ -8,6 +10,10 @@ Future<void> setUpPython() async {
   await installPip.apply();
   await installPoetry.apply();
   await configPoetryVenv.apply();
+
+  // Conda can easily install CUDA in the virtual environment. Hence we'll
+  // prefer it over poetry in those cases.
+  await setUpConda();
 }
 
 final installPip = AptInstall('python3-pip');
