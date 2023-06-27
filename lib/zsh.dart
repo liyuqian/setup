@@ -6,8 +6,9 @@ import 'setup.dart';
 
 Future<void> setUpZsh({Logger? logger}) async {
   final setups = [
-    installFzf,
     installZsh,
+    cloneFzf,
+    installFzf,
     ohMyZsh,
     powerLevel10k,
     installAutojump,
@@ -21,11 +22,22 @@ Future<void> setUpZsh({Logger? logger}) async {
   }
 }
 
-final installFzf = AptInstall('fzf');
 final installZsh = AptInstall('zsh');
 final installAutojump = AptInstall('autojump');
 final getZshAutosuggestions = GetOmzPlugin('zsh-autosuggestions');
 final getZshSyntaxHighlighting = GetOmzPlugin('zsh-syntax-highlighting');
+
+final cloneFzf = SetupByCmds('clone fzf',
+    commands: [
+      Cmd('git clone --depth 1 https://github.com/junegunn/fzf.git $home/.fzf')
+    ],
+    check: FileCheck('$home/.fzf'));
+
+final installFzf = SetupByCmds('install fzf',
+    commands: [
+      Cmd('$home/.fzf/install --key-bindings --completion --no-update-rc')
+    ],
+    check: FileCheck('$home/.fzf.zsh'));
 
 final ohMyZsh = SetupByCmds(
   'install oh-my-zsh',

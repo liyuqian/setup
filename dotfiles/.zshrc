@@ -115,8 +115,8 @@ export EDITOR="$VISUAL"
 
 export HISTSIZE=1000000
 
-source /usr/share/doc/fzf/examples/key-bindings.zsh
-source /usr/share/doc/fzf/examples/completion.zsh
+# fzf
+[ -f ~/.fzf.zsh  ] && source ~/.fzf.zsh
 
 # Load ~/.zshrc.local for customization if there's any.
 [[ ! -f ~/.zshrc.local ]] || source ~/.zshrc.local
