@@ -17,6 +17,7 @@ Future<void> main() async {
 
   await installLatestVim.apply();
   await ultimateVimrc.apply();
+  await ctrlpVimPlugin.apply();
   await dartVimPlugin.apply();
   await fzfPlugin.apply();
   await fzfVimPlugin.apply();
@@ -119,6 +120,7 @@ class VimPlugin extends SetupByCmds {
 }
 
 final dartVimPlugin = VimPlugin('https://github.com/dart-lang/dart-vim-plugin');
+final ctrlpVimPlugin = VimPlugin('https://github.com/kien/ctrlp.vim.git');
 final fzfPlugin = VimPlugin('https://github.com/junegunn/fzf');
 final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
 final cocVimPlugin =
