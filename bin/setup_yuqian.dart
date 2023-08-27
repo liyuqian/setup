@@ -94,7 +94,6 @@ final ultimateVimrc = SetupByCmds(
       'https://github.com/amix/vimrc.git',
       '$home/.vim_runtime',
     ]),
-    Cmd('sh $home/.vim_runtime/install_awesome_vimrc.sh'),
   ],
   check: CheckByCmd(
     Cmd('cat $home/.vimrc'),
@@ -108,6 +107,7 @@ class VimPlugin extends SetupByCmds {
       : super(
           parseName(url),
           commands: [
+            Cmd('mkdir -p $path'),
             Cmd.args(
               ['git', 'clone', '--depth=1'] +
                   (branch != null ? ['-b', branch] : []) +
@@ -117,7 +117,7 @@ class VimPlugin extends SetupByCmds {
           check: FileCheck('$path/${parseName(url)}'),
         );
 
-  static String get path => '$home/.vim_runtime/my_plugins';
+  static String get path => '$home/.vim/pack/plugins/start';
   static String parseName(String url) => Uri.parse(url).pathSegments.last;
 }
 
