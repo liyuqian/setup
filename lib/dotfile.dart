@@ -7,6 +7,7 @@ const Map<String, String> kRelativePathToHash = {
   '.tmux.conf.local': 'd9830edc',
   '.vim_runtime/my_configs.vim': '44d404ca',
   '.vim_runtime/my_plugins/coc_configs.vim': '1e5e28c0',
+  '.vimrc': '44317ffe',
 };
 
 Future<void> downloadDotfiles(String dotfileRootUrl, {Logger? logger}) async {

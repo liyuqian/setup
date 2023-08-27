@@ -18,6 +18,7 @@ Future<void> main() async {
   await installLatestVim.apply();
   await ultimateVimrc.apply();
   await dartVimPlugin.apply();
+  await fzfPlugin.apply();
   await fzfVimPlugin.apply();
   await cocVimPlugin.apply();
 
@@ -95,11 +96,7 @@ final ultimateVimrc = SetupByCmds(
       '$home/.vim_runtime',
     ]),
   ],
-  check: CheckByCmd(
-    Cmd('cat $home/.vimrc'),
-    (stdout) => stdout.contains('.vim_runtime'),
-    okExitCodes: [0, 1],
-  ),
+  check: FileCheck('$home/.vim_runtime'),
 );
 
 class VimPlugin extends SetupByCmds {
@@ -122,6 +119,7 @@ class VimPlugin extends SetupByCmds {
 }
 
 final dartVimPlugin = VimPlugin('https://github.com/dart-lang/dart-vim-plugin');
+final fzfPlugin = VimPlugin('https://github.com/junegunn/fzf');
 final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
 final cocVimPlugin =
     VimPlugin('https://github.com/neoclide/coc.nvim', branch: 'release');
