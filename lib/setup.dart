@@ -67,6 +67,8 @@ class False extends Check {
 }
 
 class CheckByCmd extends Check {
+  /// @param okExitCodes no error messages are printed with these exit code. But
+  /// it doesn't mean that the check is successful with these exit codes.
   const CheckByCmd(this.command, this.pass,
       {this.okExitCodes = const [0], this.muteCmdNotFound = false});
   final Cmd command;
@@ -172,6 +174,20 @@ class AptInstall extends SetupByCmds {
           check: CheckByCmd(
             Cmd('dpkg-query --status $package'),
             (stdout) => stdout.contains('installed'),
+            okExitCodes: [0, 1],
+          ),
+        );
+  final String package;
+}
+
+class BrewInstall extends SetupByCmds {
+  BrewInstall(this.package)
+      : super(
+          'brew install $package',
+          commands: [Cmd('brew install $package')],
+          check: CheckByCmd(
+            Cmd('brew info $package'),
+            (stdout) => !stdout.contains('Not installed'),
             okExitCodes: [0, 1],
           ),
         );

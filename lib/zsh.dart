@@ -4,28 +4,33 @@ import 'package:logger/logger.dart';
 
 import 'setup.dart';
 
-Future<void> setUpZsh({Logger? logger}) async {
-  final setups = [
-    installZsh,
+Future<void> setUpZshMac({Logger? logger}) async {
+  await setUpZsh(preSetups: [BrewInstall('autojump')]);
+}
+
+Future<void> setUpZshUbuntu({Logger? logger}) async {
+  await setUpZsh(preSetups: [
+    AptInstall('zsh'),
+    AptInstall('autojump'),
+    setZshAsDefault,
+  ]);
+}
+
+Future<void> setUpZsh({required List<Setup> preSetups, Logger? logger}) async {
+  final List<Setup> setups = [
+    ...preSetups,
     cloneFzf,
     installFzf,
     ohMyZsh,
     powerLevel10k,
-    installAutojump,
-    getZshAutosuggestions,
-    getZshSyntaxHighlighting,
+    GetOmzPlugin('zsh-autosuggestions'),
+    GetOmzPlugin('zsh-syntax-highlighting'),
     setVimInZshrc,
-    setZshAsDefault,
   ];
   for (final setup in setups) {
     await setup.apply(logger: logger);
   }
 }
-
-final installZsh = AptInstall('zsh');
-final installAutojump = AptInstall('autojump');
-final getZshAutosuggestions = GetOmzPlugin('zsh-autosuggestions');
-final getZshSyntaxHighlighting = GetOmzPlugin('zsh-syntax-highlighting');
 
 final cloneFzf = SetupByCmds('clone fzf',
     commands: [
@@ -67,23 +72,6 @@ final powerLevel10k = SetupByCmds(
   ],
   check: FileCheck('$home/.oh-my-zsh/custom/themes/powerlevel10k/README.md'),
 );
-
-// final setThemePowerLevel10k = SetupByCmds(
-//   'Set theme powerlevel10k',
-//   commands: [
-//     Cmd('cp $home/.zshrc $home/.zshrc.bak'),
-//     Cmd.args([
-//       'sed',
-//       '-i',
-//       's/ZSH_THEME=.*/ZSH_THEME="powerlevel10k\\/powerlevel10k"/g',
-//       '$home/.zshrc',
-//     ]),
-//   ],
-//   check: ConfigFileCheck(
-//     '$home/.zshrc',
-//     ['ZSH_THEME="powerlevel10k/powerlevel10k"'],
-//   ),
-// );
 
 final setZshAsDefault = SetupByCmds(
   'set zsh as default',

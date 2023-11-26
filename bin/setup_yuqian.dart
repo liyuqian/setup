@@ -1,17 +1,18 @@
 import 'package:setup/dotfile.dart';
 import 'package:setup/setup.dart';
+import 'package:setup/shared.dart';
 import 'package:setup/zsh.dart';
 
 Future<void> main() async {
   await setVimInBashrc.apply();
   await installGit.apply();
-  await gitConfig.apply();
+  await makeGitSetup("Yuqian Li", "liyuqian79@gmail.com").apply();
 
   await installTmux.apply();
   await ohMyTmux.apply();
   await installXclip.apply();
 
-  await setUpZsh();
+  await setUpZshUbuntu();
 
   await installNode19.apply();
 
@@ -54,26 +55,6 @@ final setVimInBashrc = ConfigFileSetup(
   ],
 );
 
-final gitConfig = SetupByCmds(
-  'config git',
-  commands: [
-    Cmd.args(['git', 'config', '--global', 'user.name', 'Yuqian Li']),
-    Cmd('git config --global user.email "liyuqian79@gmail.com"'),
-  ],
-  check: CheckByCmd(
-    Cmd('git config --global user.name'),
-    (stdout) => stdout.contains('Yuqian Li'),
-  ),
-);
-
-final ohMyTmux = SetupByCmds('install oh-my-tmux',
-    commands: Cmd.simpleLines([
-      'git clone https://github.com/gpakosz/.tmux.git',
-      'ln -s -f .tmux/.tmux.conf',
-      'cp .tmux/.tmux.conf.local .',
-    ], path: home),
-    check: FileCheck('$home/.tmux.conf'));
-
 final installLatestVim = SetupByCmds("install latest vim",
     commands: Cmd.simpleLines([
       'sudo add-apt-repository ppa:jonathonf/vim',
@@ -85,43 +66,3 @@ final installLatestVim = SetupByCmds("install latest vim",
       (stdout) => stdout.contains('Vi IMproved 9'),
       muteCmdNotFound: true,
     ));
-
-final ultimateVimrc = SetupByCmds(
-  'ultimate vimrc',
-  commands: [
-    Cmd.args([
-      'git',
-      'clone',
-      '--depth=1',
-      'https://github.com/amix/vimrc.git',
-      '$home/.vim_runtime',
-    ]),
-  ],
-  check: FileCheck('$home/.vim_runtime'),
-);
-
-class VimPlugin extends SetupByCmds {
-  VimPlugin(String url, {String? branch})
-      : super(
-          parseName(url),
-          commands: [
-            Cmd('mkdir -p $path'),
-            Cmd.args(
-              ['git', 'clone', '--depth=1'] +
-                  (branch != null ? ['-b', branch] : []) +
-                  [url, '$path/${parseName(url)}'],
-            ),
-          ],
-          check: FileCheck('$path/${parseName(url)}'),
-        );
-
-  static String get path => '$home/.vim/pack/plugins/start';
-  static String parseName(String url) => Uri.parse(url).pathSegments.last;
-}
-
-final dartVimPlugin = VimPlugin('https://github.com/dart-lang/dart-vim-plugin');
-final ctrlpVimPlugin = VimPlugin('https://github.com/kien/ctrlp.vim.git');
-final fzfPlugin = VimPlugin('https://github.com/junegunn/fzf');
-final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
-final cocVimPlugin =
-    VimPlugin('https://github.com/neoclide/coc.nvim', branch: 'release');
