@@ -113,7 +113,7 @@ source $ZSH/oh-my-zsh.sh
 export VISUAL=vim
 export EDITOR="$VISUAL"
 
-export HISTSIZE=1000000
+export HISTSIZE=10000000
 
 # fzf
 [ -f ~/.fzf.zsh  ] && source ~/.fzf.zsh
