@@ -1,0 +1,23 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: flutter-actions/setup-flutter@v3
+        with:
+          channel: stable
+
+      - name: Test setup_yuqian_mac
+        run: |
+          dart bin/setup_yuqian_mac.dart
