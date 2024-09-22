@@ -2,7 +2,7 @@ import 'package:logger/logger.dart';
 import 'package:setup/setup.dart';
 
 const Map<String, String> kRelativePathToHash = {
-  '.zshrc': 'fd23131b',
+  '.zshrc': 'd4e83e6e',
   '.p10k.zsh': '7cd917a1',
   '.tmux.conf.local': 'd9830edc',
   '.vim_runtime/my_configs.vim': '44d404ca',
