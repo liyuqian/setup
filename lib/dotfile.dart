@@ -3,7 +3,7 @@ import 'package:setup/setup.dart';
 
 const Map<String, String> kRelativePathToHash = {
   '.zshrc': 'd4e83e6e',
-  '.p10k.zsh': '7cd917a1',
+  '.p10k.zsh': '0651591e',
   '.tmux.conf.local': 'd9830edc',
   '.vim_runtime/my_configs.vim': '44d404ca',
   '.vim_runtime/my_plugins/coc_configs.vim': '1e5e28c0',
