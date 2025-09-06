@@ -14,7 +14,7 @@ Future<void> main() async {
 
   await setUpZshUbuntu();
 
-  await installNode19.apply();
+  await installNode22.apply();
 
   await installLatestVim.apply();
   await ultimateVimrc.apply();
@@ -34,15 +34,15 @@ final installGit = AptInstall('git');
 final installTmux = AptInstall('tmux');
 final installXclip = AptInstall('xclip');
 
-final installNode19 = SetupByCmds('Install nodejs 19',
+final installNode22 = SetupByCmds('Install nodejs 22',
     commands: Cmd.simpleLines([
-      'curl -fsSL https://deb.nodesource.com/setup_19.x -o /tmp/node.sh',
+      'curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/node.sh',
       'sudo -E bash /tmp/node.sh',
       'sudo apt-get install -y nodejs',
     ]),
     check: CheckByCmd(
       Cmd('node --version'),
-      (stdout) => stdout.contains('v19'),
+      (stdout) => stdout.contains('v22'),
       muteCmdNotFound: true,
     ));
 
