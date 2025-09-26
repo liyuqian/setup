@@ -9,7 +9,7 @@ Future<void> main() async {
 
 Future<void> setUpPython() async {
   // We now prefer pdm
-  await installPdmAsExecutable.apply();
+  await setUpPdm();
 
   // Conda can easily install CUDA in the virtual environment. Hence we'll
   // prefer it over poetry in those cases.

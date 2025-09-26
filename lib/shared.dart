@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'setup.dart';
 
 SetupByCmds makeGitSetup(String name, String email) {
@@ -63,11 +65,15 @@ final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
 final cocVimPlugin =
     VimPlugin('https://github.com/neoclide/coc.nvim', branch: 'release');
 
-final installPdmAsExecutable = ComboSetup(
-  'install pdm as executable',
-  [_installPdm, _setupPdmPath],
-);
-final _installPdm = SetupByCmds(
+Future<void> setUpPdm() async {
+  if (Platform.isLinux) {
+    await setUpMultiple([_installPdmOnLinux, _setupPdmPathOnLinux]);
+  } else if (Platform.isMacOS) {
+    await BrewInstall('pdm').apply();
+  }
+}
+
+final _installPdmOnLinux = SetupByCmds(
   'install pdm',
   commands: Cmd.simpleLines([
     'curl -sSL https://pdm-project.org/install-pdm.py -o /tmp/install-pdm.py',
@@ -75,7 +81,7 @@ final _installPdm = SetupByCmds(
   ]),
   check: FileCheck('$home/.local/bin/pdm'),
 );
-final _setupPdmPath = ConfigFileSetup(
+final _setupPdmPathOnLinux = ConfigFileSetup(
   'add pdm to \$PATH',
   filepath: rcFilePath,
   lines: ['export PATH=$home/.local/bin:\$PATH'],

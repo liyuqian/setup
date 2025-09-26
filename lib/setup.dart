@@ -277,32 +277,8 @@ class DownloadFile extends SetupByCmds {
   }
 }
 
-class ComboCheck extends Check {
-  const ComboCheck(this.checks);
-  final List<Check> checks;
-  @override
-  Future<bool> test({Logger? logger}) async {
-    for (final check in checks) {
-      if (!await check.test(logger: logger)) {
-        return false;
-      }
-    }
-    return true;
-  }
-}
-
-class ComboSetup extends Setup {
-  factory ComboSetup(String name, List<Setup> setups) => ComboSetup._(
-      name, setups, ComboCheck(setups.map((s) => s.check).toList()));
-
-  ComboSetup._(String name, this.setups, ComboCheck comboCheck)
-      : super(name, check: comboCheck);
-
-  final List<Setup> setups;
-  @override
-  Future<void> doApply(Logger logger) async {
-    for (final setup in setups) {
-      await setup.apply(logger: logger);
-    }
+Future<void> setUpMultiple(List<Setup> setups, {Logger? logger}) async {
+  for (final setup in setups) {
+    await setup.apply(logger: logger);
   }
 }
