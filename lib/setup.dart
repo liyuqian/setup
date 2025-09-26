@@ -8,6 +8,23 @@ import 'package:meta/meta.dart';
 import 'default.dart';
 
 String get home => Platform.environment['HOME']!;
+bool get isShellZsh => Platform.environment['SHELL']!.endsWith('/zsh');
+bool get isShellBash => Platform.environment['SHELL']!.endsWith('/bash');
+String get rcFilePath {
+  const List<String> zshRcFiles = ['.zshrc.local', '.zshrc'];
+  const List<String> bashRcFiles = ['.bash_profile', '.bashrc'];
+  List<String>? rcFiles;
+  if (isShellZsh) rcFiles = zshRcFiles;
+  if (isShellBash) rcFiles = bashRcFiles;
+  if (rcFiles == null) {
+    throw Exception('rcFilePath only works in bash or zsh shell.');
+  }
+  for (final rcFile in rcFiles) {
+    final path = '$home/$rcFile';
+    if (File(path).existsSync()) return path;
+  }
+  throw Exception('Cannot find any of $rcFiles.');
+}
 
 const String kRawGithubRoot = 'https://raw.githubusercontent.com';
 
@@ -236,6 +253,7 @@ class ConfigFileSetup extends Setup {
     final fileLines = File(filepath).readAsLinesSync();
     fileLines.addAll(lines);
     File(filepath).writeAsStringSync('${fileLines.join('\n')}\n');
+    logger.i('Appended ${lines.length} lines to $filepath');
   }
 }
 
@@ -256,5 +274,35 @@ class DownloadFile extends SetupByCmds {
   Future<void> doApply(Logger logger) async {
     Setup.backupFile(path, logger);
     return await super.doApply(logger);
+  }
+}
+
+class ComboCheck extends Check {
+  const ComboCheck(this.checks);
+  final List<Check> checks;
+  @override
+  Future<bool> test({Logger? logger}) async {
+    for (final check in checks) {
+      if (!await check.test(logger: logger)) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+class ComboSetup extends Setup {
+  factory ComboSetup(String name, List<Setup> setups) => ComboSetup._(
+      name, setups, ComboCheck(setups.map((s) => s.check).toList()));
+
+  ComboSetup._(String name, this.setups, ComboCheck comboCheck)
+      : super(name, check: comboCheck);
+
+  final List<Setup> setups;
+  @override
+  Future<void> doApply(Logger logger) async {
+    for (final setup in setups) {
+      await setup.apply(logger: logger);
+    }
   }
 }

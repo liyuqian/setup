@@ -1,17 +1,21 @@
 import 'package:setup/setup.dart';
+import 'package:setup/shared.dart';
 
-import 'setup_miniconda.dart';
+// import 'setup_miniconda.dart';
 
 Future<void> main() async {
   await setUpPython();
 }
 
 Future<void> setUpPython() async {
+  // We now prefer pdm
+  await installPdmAsExecutable.apply();
+
   // Conda can easily install CUDA in the virtual environment. Hence we'll
   // prefer it over poetry in those cases.
   //
   // All other dependencies such as pip and poetry can be installed using conda.
-  await setUpConda();
+  // await setUpConda();
 
   // await installPip.apply();
   // await installPoetry.apply();
