@@ -62,3 +62,21 @@ final fzfPlugin = VimPlugin('https://github.com/junegunn/fzf');
 final fzfVimPlugin = VimPlugin('https://github.com/junegunn/fzf.vim');
 final cocVimPlugin =
     VimPlugin('https://github.com/neoclide/coc.nvim', branch: 'release');
+
+final installPdmAsExecutable = ComboSetup(
+  'install pdm as executable',
+  [_installPdm, _setupPdmPath],
+);
+final _installPdm = SetupByCmds(
+  'install pdm',
+  commands: Cmd.simpleLines([
+    'curl -sSL https://pdm-project.org/install-pdm.py -o /tmp/install-pdm.py',
+    'python3 /tmp/install-pdm.py',
+  ]),
+  check: FileCheck('$home/.local/bin/pdm'),
+);
+final _setupPdmPath = ConfigFileSetup(
+  'add pdm to \$PATH',
+  filepath: rcFilePath,
+  lines: ['export PATH=$home/.local/bin:\$PATH'],
+);
