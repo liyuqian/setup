@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
-import 'package:setup/default.dart';
-import 'package:setup/dotfile.dart';
-import 'package:setup/setup.dart';
+import 'package:setup/collection.dart';
 
 void main() {
   final String projectRoot = File(Platform.script.path).parent.parent.path;

@@ -1,7 +1,4 @@
-import 'package:setup/dotfile.dart';
-import 'package:setup/setup.dart';
-import 'package:setup/shared.dart';
-import 'package:setup/zsh.dart';
+import 'package:setup/collection.dart';
 
 Future<void> main() async {
   await setVimInBashrc.apply();

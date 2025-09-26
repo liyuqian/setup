@@ -6,12 +6,12 @@ SetupByCmds makeGitSetup(String name, String email) {
   return SetupByCmds(
     'config git',
     commands: [
-      Cmd.args(['git', 'config', '--global', 'user.name', 'Yuqian Li']),
+      Cmd.args(['git', 'config', '--global', 'user.name', name]),
       Cmd('git config --global user.email "$email"'),
     ],
     check: CheckByCmd(
       Cmd('git config --global user.name'),
-      (stdout) => stdout.contains('Yuqian Li'),
+      (stdout) => stdout.contains(name),
       okExitCodes: [0, 1],
     ),
   );

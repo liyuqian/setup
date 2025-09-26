@@ -1,5 +1,4 @@
-import 'package:setup/setup.dart';
-import 'package:setup/shared.dart';
+import 'package:setup/collection.dart';
 
 // import 'setup_miniconda.dart';
 

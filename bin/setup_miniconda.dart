@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:logger/src/logger.dart';
-import 'package:setup/setup.dart';
+import 'package:setup/collection.dart';
 
 Future<void> main() async {
   await setUpConda();

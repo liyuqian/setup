@@ -1,5 +1,5 @@
 import 'package:logger/logger.dart';
-import 'package:setup/setup.dart';
+import 'package:setup/collection.dart';
 
 const Map<String, String> kRelativePathToHash = {
   '.zshrc': 'd4e83e6e',
