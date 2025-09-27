@@ -86,3 +86,19 @@ final _setupPdmPathOnLinux = ConfigFileSetup(
   filepath: rcFilePath,
   lines: ['export PATH=$home/.local/bin:\$PATH'],
 );
+
+final protocPluginSetup = SetupByCmds('install protoc_plugin',
+    commands: Cmd.simpleLines([
+      'dart pub global activate protoc_plugin',
+    ]),
+    check: CheckByCmd(
+      Cmd('dart pub global list'),
+      (stdout) => stdout.contains('protoc_plugin'),
+    ));
+
+final installBun = SetupByCmds('install bun',
+    commands: Cmd.simpleLines([
+      'curl -fsSL https://bun.sh/install -o /tmp/install-bun.sh',
+      'bash /tmp/install-bun.sh',
+    ]),
+    check: FileCheck('$home/.bun/bin/bun'));

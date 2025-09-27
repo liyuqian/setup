@@ -25,6 +25,8 @@ export 'src/shared.dart'
         makeGitSetup,
         setUpPdm,
         VimPlugin,
+        protocPluginSetup,
+        installBun,
         ohMyTmux,
         ultimateVimrc,
         dartVimPlugin,
