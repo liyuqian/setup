@@ -197,6 +197,23 @@ class AptInstall extends SetupByCmds {
   final String package;
 }
 
+class SnapInstall extends SetupByCmds {
+  SnapInstall(this.package, {this.extraArg = ''})
+      : super(
+          'snap install $package',
+          commands: [
+            Cmd('sudo snap install $package $extraArg'),
+          ],
+          check: CheckByCmd(
+            Cmd('snap info $package'),
+            (stdout) => stdout.contains('installed'),
+            okExitCodes: [0, 1],
+          ),
+        );
+  final String package;
+  final String extraArg; // e.g. --classic
+}
+
 class BrewInstall extends SetupByCmds {
   BrewInstall(this.package)
       : super(

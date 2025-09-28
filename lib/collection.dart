@@ -15,6 +15,7 @@ export 'src/setup.dart'
         SetupByCmds,
         ConfigFileSetup,
         AptInstall,
+        SnapInstall,
         BrewInstall,
         GetOmzPlugin,
         DownloadFile,
