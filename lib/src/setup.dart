@@ -115,6 +115,12 @@ class CheckByCmd extends Check {
   }
 }
 
+class CheckCmdExistence extends CheckByCmd {
+  // If cmd not found, mute the stacktrace and return false, else return true.
+  CheckCmdExistence(String command)
+      : super(Cmd(command), (stdout) => true, muteCmdNotFound: true);
+}
+
 class FileCheck extends Check {
   const FileCheck(this.filepath, {this.sha512Prefix});
   final String filepath;

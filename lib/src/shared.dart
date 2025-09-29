@@ -102,3 +102,10 @@ final installBun = SetupByCmds('install bun',
       'bash /tmp/install-bun.sh',
     ]),
     check: FileCheck('$home/.bun/bin/bun'));
+
+final installFirebase = SetupByCmds('install firebase cli',
+    commands: Cmd.simpleLines([
+      'curl -sL https://firebase.tools -o /tmp/install-firebase.sh',
+      'bash /tmp/install-firebase.sh'
+    ]),
+    check: CheckCmdExistence('firebase --version'));
