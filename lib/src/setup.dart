@@ -221,10 +221,10 @@ class SnapInstall extends SetupByCmds {
 }
 
 class BrewInstall extends SetupByCmds {
-  BrewInstall(this.package)
+  BrewInstall(this.package, {this.extraArg = ''})
       : super(
           'brew install $package',
-          commands: [Cmd('brew install $package')],
+          commands: [Cmd('brew install $extraArg $package')],
           check: CheckByCmd(
             Cmd('brew info $package'),
             (stdout) => !stdout.contains('Not installed'),
@@ -232,6 +232,7 @@ class BrewInstall extends SetupByCmds {
           ),
         );
   final String package;
+  final String extraArg; // e.g. --cask
 }
 
 class GetOmzPlugin extends SetupByCmds {

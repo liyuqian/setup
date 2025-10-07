@@ -1,5 +1,5 @@
 import 'package:setup/collection.dart';
 
 Future<void> main() async {
-  installFirebase.apply();
+  await BrewInstall('google-chrome', extraArg: '--cask').apply();
 }
