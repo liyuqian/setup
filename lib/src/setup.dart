@@ -37,7 +37,8 @@ class ExitCodeError extends Error {
 
 class Cmd {
   /// Simple command that can be split by spaces without escapes.
-  Cmd(String cmd, {String? path}) : this.args(cmd.split(' '), path: path);
+  Cmd(String cmd, {String? path})
+      : this.args(cmd.trim().split(RegExp(r'\s+')), path: path);
 
   /// General commands with args list that may need escapes.
   const Cmd.args(this.cmdAndArgs, {this.path});
