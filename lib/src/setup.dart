@@ -224,7 +224,7 @@ class BrewInstall extends SetupByCmds {
   BrewInstall(this.package, {this.extraArg = ''})
       : super(
           'brew install $package',
-          commands: [Cmd('brew install $extraArg $package')],
+          commands: [Cmd('brew install $package $extraArg')],
           check: CheckByCmd(
             Cmd('brew info $package'),
             (stdout) => !stdout.contains('Not installed'),
