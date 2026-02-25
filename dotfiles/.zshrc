@@ -114,6 +114,7 @@ export VISUAL=vim
 export EDITOR="$VISUAL"
 
 export HISTSIZE=10000000
+export SAVEHIST=10000000
 
 # fzf
 [ -f ~/.fzf.zsh  ] && source ~/.fzf.zsh
