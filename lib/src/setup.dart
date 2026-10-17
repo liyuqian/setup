@@ -266,8 +266,8 @@ class ConfigFileCheck extends Check {
 }
 
 class ConfigFileSetup extends Setup {
-  ConfigFileSetup(String name, {required this.filepath, required this.lines})
-      : super(name, check: ConfigFileCheck(filepath, lines));
+  ConfigFileSetup(super.name, {required this.filepath, required this.lines})
+      : super(check: ConfigFileCheck(filepath, lines));
 
   final String filepath;
   final List<String> lines;
@@ -283,10 +283,9 @@ class ConfigFileSetup extends Setup {
 }
 
 class DownloadFile extends SetupByCmds {
-  DownloadFile(String name,
+  DownloadFile(super.name,
       {required this.path, required String url, required String sha512Prefix})
       : super(
-          name,
           commands: [
             Cmd.args(['curl', url, '-o', path])
           ],

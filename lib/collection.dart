@@ -1,4 +1,4 @@
-library collection;
+library;
 
 export 'src/setup.dart'
     show
@@ -53,3 +53,5 @@ export 'src/zsh.dart'
 export 'src/dotfile.dart' show kRelativePathToHash, downloadDotfiles;
 
 export 'src/default.dart' show defaultLogger;
+
+export 'src/ubuntu.dart' show setupUbuntu;

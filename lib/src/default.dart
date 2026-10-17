@@ -8,8 +8,7 @@ class DefaultFilter extends ProductionFilter {
 }
 
 class ShortTimePrinter extends SimplePrinter {
-  ShortTimePrinter({bool colors = true})
-      : super(printTime: true, colors: colors);
+  ShortTimePrinter({super.colors}) : super(printTime: true);
 
   @override
   List<String> log(LogEvent event) {
