@@ -23,7 +23,6 @@ Future<void> main() async {
   await BrewInstall('node').apply();
 
   await ultimateVimrc.apply();
-  await ctrlpVimPlugin.apply();
   await dartVimPlugin.apply();
   await fzfPlugin.apply();
   await fzfVimPlugin.apply();

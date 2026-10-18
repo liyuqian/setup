@@ -33,7 +33,6 @@ export 'src/shared.dart'
         ohMyTmux,
         ultimateVimrc,
         dartVimPlugin,
-        ctrlpVimPlugin,
         fzfPlugin,
         fzfVimPlugin,
         cocVimPlugin;

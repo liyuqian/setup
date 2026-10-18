@@ -14,7 +14,6 @@ Future<void> setupUbuntu() async {
 
   await installLatestVim.apply();
   await ultimateVimrc.apply();
-  await ctrlpVimPlugin.apply();
   await dartVimPlugin.apply();
   await fzfPlugin.apply();
   await fzfVimPlugin.apply();
